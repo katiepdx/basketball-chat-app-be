@@ -24,6 +24,9 @@ let counter = 0;
 io.on('connection', (socket) => {
   console.log('a user connected', socket.id);
 
+
+  // TODO: Fix bug - counter displays as 0 when a new client connects and existing client's count increments. On next click, count is synchronized across all clients and is correct.
+  
   // broadcast current count to all connected clients
   socket.broadcast.emit('current-count', counter);
   
