@@ -23,21 +23,22 @@ let counter = 0;
 // SOCKET IO 
 io.on('connection', (socket) => {
   console.log('a user connected', socket.id);
-
-
-  // TODO: Fix bug - counter displays as 0 when a new client connects and existing client's count increments. On next click, count is synchronized across all clients and is correct.
   
-  // broadcast current count to all connected clients
-  socket.broadcast.emit('current-count', counter);
+  // broadcast current count to all connected clients including the sender
+  io.emit('current-count', counter);
   
   // when client clicks btn
   socket.on('user-click', () => {
     // server sends info back to client with updated count
-    io.emit('increment-click', counter++);
+    io.emit('increment-click', ++counter);
 
     console.log(`user ${socket.id} clicked ${counter} times`);
   });
-  
+
+  // disconnect socket 
+  socket.on('disconnect', () => {
+    console.log(`BE: ${socket.id} disconnected`);
+  });
 });
 
 server.listen(PORT, () => {
