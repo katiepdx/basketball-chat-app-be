@@ -18,21 +18,22 @@ const io = new Server(server, {
 // SERVER PORT
 const PORT = process.env.PORT || 7890;
 
-let counter = 0;
+const allMessages = [];
 
 // SOCKET IO 
 io.on('connection', (socket) => {
   console.log('a user connected', socket.id);
   
-  // broadcast current count to all connected clients including the sender
-  io.emit('current-count', counter);
+  // broadcast current messages to all connected clients including the sender
+  io.emit('current-messages', allMessages);
   
-  // when client clicks btn
-  socket.on('user-click', () => {
-    // server sends info back to client with updated count
-    io.emit('increment-click', ++counter);
-
-    console.log(`user ${socket.id} clicked ${counter} times`);
+  // when sends a message
+  socket.on('send-new-msg', (msgContent) => {
+    // add new msg to all msg arr
+    // current-messages emit sends it to all connected clients 
+    allMessages.push(msgContent);
+    // send new msg to all connected clients
+    io.emit('new-message', msgContent);
   });
 
   // disconnect socket 
